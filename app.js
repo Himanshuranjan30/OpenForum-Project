@@ -10,14 +10,12 @@ const userRoutes=require('./routes/userroutes')
 const authRoutes=require('./routes/authroutes')
 const postRoutes=require('./routes/postroutes')
 const CURRENT_WORKING_DIR = process.cwd()
-app.use(bodyParser.json)
-app.use(bodyParser.urlencoded)
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieparser())
 app.use(express.static(__dirname +'/assets'));
 
-app.use('/', userRoutes)
-app.use('/', authRoutes)
-app.use('/', postRoutes)
+
 
 mongoose.connect(config.mongoUri,{ useNewUrlParser: true },()=>{
     console.log('connected to db')
@@ -26,5 +24,12 @@ mongoose.connect(config.mongoUri,{ useNewUrlParser: true },()=>{
 mongoose.connection.on('error', () => {
   throw new Error(`unable to connect to database`)
 })
+app.use('/', userRoutes)
+app.use('/', authRoutes)
+app.use('/', postRoutes)
 
+app.use('/hey',(req,res)=>{
+  print(req.body)
+  res.json(req.body)
+})
 app.listen(3000)

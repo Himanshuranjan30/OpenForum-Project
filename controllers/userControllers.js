@@ -3,12 +3,12 @@ const formidable = require("formidable");
 const fs = require("fs");
 const extend = require("extend");
 
-const create = async (req, res) => {
+let create = async(req, res) => {
   console.log("hey there")
   const user = new User(req.body);
   console.log(req.body)
   try {
-    await user.save();
+  await user.save();
     return res.status(200).json({
       message: "Successfully signed up!",
     });
