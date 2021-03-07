@@ -5,7 +5,7 @@ const config=require('./config')
 const bodyParser=require('body-parser')
 const cookieparser=require('cookie-parser')
 const cors=require('cors')
-
+const CURRENT_WORKING_DIR = process.cwd()
 app.use(bodyParser.json)
 app.use(bodyParser.urlencoded)
 app.use(cookieparser())
