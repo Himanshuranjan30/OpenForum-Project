@@ -2,7 +2,14 @@ const express=require('express')
 const mongoose=require('mongoose')
 const app= express()
 const config=require('./config')
+const bodyParser=require('body-parser')
+const cookieparser=require('cookie-parser')
+const cors=require('cors')
 
+app.use(bodyParser.json)
+app.use(bodyParser.urlencoded)
+app.use(cookieparser())
+app.use(cors())
 
 
 mongoose.connect(config.mongoUri,{ useNewUrlParser: true },()=>{
