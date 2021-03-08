@@ -122,6 +122,22 @@ const unlike = (req, res) => {
   });
 };
 
+const likeacomment=(req,res)=>{
+  var comment=req.body.comment
+  comment.postedBy=req.body.postedBy
+  
+  Post.findByIdAndUpdate(
+    req.body.postId,{$inc:{'comment.likes':1}},{new:true}).exec((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      res.json(result);
+    });
+  
+}
+
 const comment = (req, res) => {
   var comment = req.body.comment;
   comment.postedBy = req.body.userId;
@@ -182,4 +198,5 @@ module.exports={
   comment,
   uncomment,
   isPoster,
+  likeacomment
 };
