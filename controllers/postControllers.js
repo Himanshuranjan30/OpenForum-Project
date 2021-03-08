@@ -123,11 +123,19 @@ const unlike = (req, res) => {
 };
 
 const likeacomment=(req,res)=>{
-  var comment=req.body.comment
-  comment.postedBy=req.body.postedBy
   
-  Post.findByIdAndUpdate(
-    req.body.postId,{$inc:{'comment.likes':1}},{new:true}).exec((err, result) => {
+  var model={
+  "_id":req.body.postId,
+  "comments":{
+  "text":  req.body.comment,
+  "postedBy":req.body.postedBy
+
+}}
+
+  
+  
+  Post.findOneAndUpdate(
+    model,{$inc:{"comments.likes":1}},{new:true}).exec((err, result) => {
       if (err) {
         return res.status(400).json({
           error: err,
@@ -139,11 +147,15 @@ const likeacomment=(req,res)=>{
 }
 
 const comment = (req, res) => {
-  var comment = req.body.comment;
-  comment.postedBy = req.body.userId;
+  var commentf = {
+    "text":req.body.comment,
+    "postedBy":req.body.userId,
+    "likes":0
+  }
+  
   Post.findByIdAndUpdate(
     req.body.postId,
-    { $push: { comments: comment } },
+    { $push: { "comments": commentf } },
     { new: true }
   )
     .populate("comments.postedBy", "_id name")

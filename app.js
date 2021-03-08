@@ -20,7 +20,7 @@ app.use(express.static(__dirname +'/assets'));
 mongoose.connect(config.mongoUri,{ useNewUrlParser: true },()=>{
     console.log('connected to db')
 })
-
+mongoose.set('useFindAndModify', false);
 mongoose.connection.on('error', () => {
   throw new Error(`unable to connect to database`)
 })
