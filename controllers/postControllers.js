@@ -122,40 +122,44 @@ const unlike = (req, res) => {
   });
 };
 
-const likeacomment=(req,res)=>{
-  
-  var model={
-  "_id":req.body.postId,
-  "comments":{
-  "text":  req.body.comment,
-  "postedBy":req.body.postedBy
+const likeacomment = (req, res) => {
+  var model = {
+    _id: req.body.postId,
+    comments: {
+      text: req.body.comment,
+      postedBy: req.body.postedBy,
+    },
+  };
 
-}}
-
-  
-  
   Post.findOneAndUpdate(
-    model,{$inc:{"comments.likes":1}},{new:true}).exec((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: err,
-        });
-      }
-      res.json(result);
-    });
+   {
+      _id: req.body.postId,
+      "comments.text":req.body.comment,
+      "comments.postedBy": req.body.postedBy,
+      
+    },
+    { $inc: { "comments.$.likes" : 1 } },
   
-}
+  ).exec((err, result) => {
+    if (err) {
+      return res.status(400).json({
+        error: err,
+      });
+    }
+    res.json(result);
+  });
+};
 
 const comment = (req, res) => {
   var commentf = {
-    "text":req.body.comment,
-    "postedBy":req.body.userId,
-    "likes":0
-  }
-  
+    text: req.body.comment,
+    postedBy: req.body.userId,
+    likes: 0,
+  };
+
   Post.findByIdAndUpdate(
     req.body.postId,
-    { $push: { "comments": commentf } },
+    { $push: { comments: commentf } },
     { new: true }
   )
     .populate("comments.postedBy", "_id name")
@@ -198,7 +202,7 @@ const isPoster = (req, res, next) => {
   next();
 };
 
-module.exports={
+module.exports = {
   listByUser,
   listNewsFeed,
   create,
@@ -210,5 +214,5 @@ module.exports={
   comment,
   uncomment,
   isPoster,
-  likeacomment
+  likeacomment,
 };
