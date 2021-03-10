@@ -28,8 +28,5 @@ app.use('/', userRoutes)
 app.use('/', authRoutes)
 app.use('/', postRoutes)
 
-app.use('/hey',(req,res)=>{
-  print(req.body)
-  res.json(req.body)
-})
+
 app.listen(config.port)
