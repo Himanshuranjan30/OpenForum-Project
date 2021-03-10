@@ -1,6 +1,7 @@
 const express = require("express");
 const userCtrl = require("../controllers/userControllers");
 const authCtrl=require('../controllers/authControllers')
+const lbcontrol=require('../controllers/lbcontroller')
 
 
 const router = express.Router();
@@ -32,6 +33,8 @@ router
   .get(authCtrl.requireSignin, userCtrl.read)
   .put(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.update)
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.remove);
+
+router.route("/leaderboard").get(authCtrl.requireSignin,lbcontrol.leaderboard)
 
 router.param("userId", userCtrl.userByID);
 

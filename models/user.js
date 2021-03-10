@@ -19,6 +19,10 @@ const UserSchema = new mongoose.Schema({
   },
   salt: String,
   updated: Date,
+  score: {type:Number,
+    required:true,
+    default:0
+  },
   created: {
     type: Date,
     default: Date.now,

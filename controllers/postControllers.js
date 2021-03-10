@@ -123,13 +123,7 @@ const unlike = (req, res) => {
 };
 
 const likeacomment = (req, res) => {
-  var model = {
-    _id: req.body.postId,
-    comments: {
-      text: req.body.comment,
-      postedBy: req.body.postedBy,
-    },
-  };
+  
 
   Post.findOneAndUpdate(
    {

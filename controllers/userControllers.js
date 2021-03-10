@@ -3,7 +3,7 @@ const formidable = require("formidable");
 const fs = require("fs");
 const extend = require("extend");
 
-let create = async(req, res) => {
+const create = async(req, res) => {
   console.log("hey there")
   const user = new User(req.body);
   console.log(req.body)
