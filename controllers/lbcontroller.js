@@ -1,5 +1,5 @@
 const Post = require("../models/post");
-const user = require("../models/user");
+
 const User = require("../models/user");
 
 const leaderboard = (req, res) => {

@@ -4,8 +4,7 @@ const passport = require("passport");
 const router = express.Router();
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const config = require("../config");
-const Post = require("../models/post");
-const mongoose = require("mongoose");
+
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
@@ -23,9 +22,8 @@ passport.deserializeUser(function (obj, cb) {
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        "789965715216-2sbi4nk44kbaabtsqt7vlddgklieksq9.apps.googleusercontent.com",
-      clientSecret: "Jtdl2O8dBSJnTUrJ9I6UEBhf",
+      clientID:config.clientid,
+      clientSecret: config.clientsecret,
       callbackURL: "https://openforumsocial.herokuapp.com/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, done) {
@@ -77,23 +75,28 @@ router
             });
           }
         });
-      }else{
-      const token = jwt.sign(
-        {
-          _id: userdata._id,
-        },
-        config.jwtSecret
-      );
+      } else {
+        const token = jwt.sign(
+          {
+            _id: userdata._id,
+          },
+          config.jwtSecret
+        );
 
-      res.cookie("t", token, {
-        expire: new Date() + 9999,
-      });
+        res.cookie("t", token, {
+          expire: new Date() + 9999,
+        });
 
-      return res.json({
-        token,
-        user: { _id: userdata._id, name: userdata.name, email: userdata.email },
-      });
-    }}
+        return res.json({
+          token,
+          user: {
+            _id: userdata._id,
+            name: userdata.name,
+            email: userdata.email,
+          },
+        });
+      }
+    }
   );
 
 router.get("/logout", (req, res) => {

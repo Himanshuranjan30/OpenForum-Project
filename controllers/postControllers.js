@@ -2,8 +2,7 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const fs = require("fs");
 const formidable = require("formidable");
-const session = require("express-session");
-const passport = require("passport");
+
 
 const create = (req, res, next) => {
   let form = new formidable.IncomingForm();
