@@ -56,8 +56,8 @@ const UserSchema = new mongoose.Schema({
     trim: true,
   },
   photo: {
-    data: Buffer,
-    contentType: String,
+    type:String,
+    default:"No Photo"
   },
   following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],

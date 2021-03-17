@@ -6,18 +6,22 @@ const bodyParser = require("body-parser");
 const cookieparser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
-
+const upload=require('express-fileupload')
 require("dotenv").config();
 const userRoutes = require("./routes/userroutes");
 const authRoutes = require("./routes/authroutes");
 const postRoutes = require("./routes/postroutes");
 const passport = require("passport");
+const mv=require('mv')
 
 var allowedDomains = [
   "https://accounts.google.com/o/oauth2/v2/auth",
   "http://localhost:3000",
   "https://openforumsocial.herokuapp.com/auth/google/callback",
 ];
+app.use(upload())
+app.use('/userimages',express.static(path.join(__dirname, '/userimages')))
+
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -33,12 +37,25 @@ app.use(
     },
   })
 );
+app.post('/userphoto',(req,res)=>{
+  console.log("uplaoding...")
+  if(req.files){
+  console.log(req.files)
+  var file=req.files['photo']
+  var filename=req.query.id+path.extname(req.files['photo'].name)
+  file.mv('./userimages/'+filename,function(err){
+    if(err)
+     res.send(err)
+    else  
+     res.send("file uplaoded")
+  })
+}
+})
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieparser());
 const CURRENT_WORKING_DIR = process.cwd();
 console.log(CURRENT_WORKING_DIR);
-app.use(express.static(path.join(CURRENT_WORKING_DIR, "./assets")));
 
 app.use(passport.initialize());
 app.use(passport.session());

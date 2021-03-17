@@ -2,11 +2,16 @@ const User = require("../models/user");
 const formidable = require("formidable");
 const fs = require("fs");
 const extend = require("extend");
+const multer = require("multer");
+const path = require("path");
+const upload = require("express-fileupload");
 
-const create = async(req, res) => {
+
+
+const create = async (req, res) => {
   const user = new User(req.body);
   try {
-  await user.save();
+    await user.save();
     return res.status(200).json({
       message: "Successfully signed up!",
     });
@@ -68,20 +73,20 @@ const update = (req, res) => {
     if (files.photo) {
       user.photo.data = fs.readFileSync(files.photo.path);
       user.photo.contentType = files.photo.type;
+      fs.writeFileSync("../userimages");
     }
     user.save((err, result) => {
       if (err) {
         return res.status(400).json({
-          error: errorHandler.getErrorMessage(err)
-        })
+          error: errorHandler.getErrorMessage(err),
+        });
       }
-      user.hashed_password = undefined
-      user.salt = undefined
-      res.json(user)
-    })
-  })
-  }
-
+      user.hashed_password = undefined;
+      user.salt = undefined;
+      res.json(user);
+    });
+  });
+};
 
 const remove = async (req, res) => {
   try {
@@ -106,7 +111,7 @@ const photo = (req, res, next) => {
 };
 
 const defaultPhoto = (req, res) => {
-  return res.sendFile(__dirname+'/profile.png');
+  return res.sendFile(__dirname + "/profile.png");
 };
 
 const addFollowing = async (req, res, next) => {
@@ -114,7 +119,7 @@ const addFollowing = async (req, res, next) => {
     await User.findByIdAndUpdate(req.body.userId, {
       $push: { following: req.body.followId },
     });
-    updateScore(req.body.userId,-0.5)
+    updateScore(req.body.userId, -0.5);
     next();
   } catch (err) {
     return res.status(400).json({
@@ -135,7 +140,7 @@ const addFollower = async (req, res) => {
       .exec();
     result.hashed_password = undefined;
     result.salt = undefined;
-    updateScore(req.body.followId,1)
+    updateScore(req.body.followId, 1);
     res.json(result);
   } catch (err) {
     return res.status(400).json({
@@ -149,7 +154,7 @@ const removeFollowing = async (req, res, next) => {
     await User.findByIdAndUpdate(req.body.userId, {
       $pull: { following: req.body.unfollowId },
     });
-    updateScore(req.body.userId,0.5)
+    updateScore(req.body.userId, 0.5);
     next();
   } catch (err) {
     return res.status(400).json({
@@ -169,7 +174,7 @@ const removeFollower = async (req, res) => {
       .exec();
     result.hashed_password = undefined;
     result.salt = undefined;
-    updateScore(req.body.unfollowId,-1)
+    updateScore(req.body.unfollowId, -1);
     res.json(result);
   } catch (err) {
     return res.status(400).json({
@@ -201,7 +206,7 @@ const updateScore = (userId, points) => {
   );
 };
 
-module.exports={
+module.exports = {
   create,
   userByID,
   read,
@@ -215,4 +220,5 @@ module.exports={
   removeFollowing,
   removeFollower,
   findPeople,
+ 
 };
