@@ -20,6 +20,7 @@ app.use(cors({
   origin: function (origin, callback) {
     // bypass the requests with no origin (like curl requests, mobile apps, etc )
     if (!origin) return callback(null, true);
+    console.log(origin)
  
     if (allowedDomains.indexOf(origin) === -1) {
       var msg = `This site ${origin} does not have an access. Only specific domains are allowed to access it.`;
