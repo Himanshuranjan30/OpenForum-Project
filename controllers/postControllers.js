@@ -312,7 +312,7 @@ const trendingposts = (req, res) => {
     .limit(10)
     .exec((er, result) => {
       if (er) res.json(er);
-      else res.json(result);
+      else return res.json(result);
     });
 };
 
