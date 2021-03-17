@@ -16,14 +16,12 @@ const create = (req, res, next) => {
     }
     let post = new Post(fields);
     post.postedBy = req.profile;
-    post.username=String(req.profile.name)
+    post.username = String(req.profile.name);
     if (files.photo) {
       post.photo.data = fs.readFileSync(files.photo.path);
       post.photo.contentType = files.photo.type;
-      post.hasphoto=1
-    }
-    else
-      post.hasphoto=0
+      post.hasphoto = 1;
+    } else post.hasphoto = 0;
     post.save((err, result) => {
       if (err) {
         return res.status(400).json({
@@ -38,7 +36,10 @@ const create = (req, res, next) => {
 
 const postByID = (req, res, next, id) => {
   Post.findById(id)
-    .populate("postedBy", "_id name").populate("likes").populate("comments.likes").populate("comments.incomments.postedBy")
+    .populate("postedBy", "_id name")
+    .populate("likes")
+    .populate("comments.likes")
+    .populate("comments.incomments.postedBy")
     .exec((err, post) => {
       if (err || !post)
         return res.status("400").json({
@@ -52,7 +53,10 @@ const postByID = (req, res, next, id) => {
 const listByUser = (req, res) => {
   Post.find({ postedBy: req.profile._id })
     .populate("comments", "text created")
-    .populate("comments.postedBy", "_id name").populate("comments.likes").populate("comments.incomments.postedBy").populate("likes")
+    .populate("comments.postedBy", "_id name")
+    .populate("comments.likes")
+    .populate("comments.incomments.postedBy")
+    .populate("likes")
     .populate("postedBy", "_id name")
     .sort("-created")
     .exec((err, posts) => {
@@ -69,8 +73,11 @@ const listNewsFeed = (req, res) => {
   let following = req.profile.following;
   following.push(req.profile._id);
   Post.find({ postedBy: { $in: req.profile.following } })
-    .populate("comments", "text created").populate("likes")
-    .populate("comments.postedBy", "_id name").populate("comments.likes").populate("comments.incomments.postedBy")
+    .populate("comments", "text created")
+    .populate("likes")
+    .populate("comments.postedBy", "_id name")
+    .populate("comments.likes")
+    .populate("comments.incomments.postedBy")
     .populate("postedBy", "_id name")
     .sort("-created")
     .exec((err, posts) => {
@@ -131,7 +138,6 @@ const unlike = (req, res) => {
 };
 
 const likeacomment = (req, res) => {
-  
   Post.findOneAndUpdate(
     {
       _id: req.body.postId,
@@ -149,7 +155,7 @@ const likeacomment = (req, res) => {
   });
 };
 
-const unlikeacomment=(req,res)=>{
+const unlikeacomment = (req, res) => {
   Post.findOneAndUpdate(
     {
       _id: req.body.postId,
@@ -165,13 +171,12 @@ const unlikeacomment=(req,res)=>{
     }
     res.json(result);
   });
-}
+};
 
 const commentincomment = (req, res) => {
   var changes = {
     text: req.body.comtext,
     postedBy: req.body.userId,
-    
   };
   Post.findOneAndUpdate(
     { _id: req.body.postId, "comments.text": req.body.comment },
@@ -191,7 +196,6 @@ const uncommentincomment = (req, res) => {
   var changes = {
     text: req.body.comtext,
     postedBy: req.body.userId,
-    
   };
   Post.findOneAndUpdate(
     { _id: req.body.postId, "comments.text": req.body.comment },
@@ -212,9 +216,7 @@ const comment = (req, res) => {
   var commentf = {
     text: req.body.comment,
     postedBy: req.body.userId,
-    likes:[]
-  
-    
+    likes: [],
   };
 
   Post.findByIdAndUpdate(
@@ -230,7 +232,7 @@ const comment = (req, res) => {
           error: err,
         });
       }
-      
+
       res.json(result);
     });
 };
@@ -254,17 +256,15 @@ const uncomment = (req, res) => {
 };
 
 const isPoster = (req, res, next) => {
-  let isPoster = (String(req.user._id) === String(req.post.postedBy._id));
-  let isPosteradmin=req.user.role=="Admin"
-  if (isPoster||isPosteradmin) {
-   next()
+  let isPoster = String(req.user._id) === String(req.post.postedBy._id);
+  let isPosteradmin = req.user.role == "Admin";
+  if (isPoster || isPosteradmin) {
+    next();
+  } else {
+    return res.status("403").json({
+      error: "User is not authorized! login now",
+    });
   }
-  else
-  {
-  return res.status("403").json({
-    error: "User is not authorized! login now",
-  });
-}
 };
 
 const updateScore = (userId, points) => {
@@ -279,44 +279,41 @@ const updateScore = (userId, points) => {
 
 const trendingposts = (req, res) => {
   Post.find({}, function (err, docs) {
-    if(docs.length==0)
-       res.send("No posts")
+    if (docs.length == 0) res.send("No posts");
     docs.forEach(function (data) {
-      var id=data.id
+      var id = data.id;
       var likes = data.likes.length;
-    
-    
+
       var comments = data.comments.length;
       const date2 = new Date();
       const diffTime = Math.abs(date2 - data.created);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       Post.findByIdAndUpdate(
         id,
-        {$inc:{score: (likes*comments)/diffDays} },
+        { $inc: { score: (likes * comments) / diffDays } },
         function (errr, doc) {
           if (errr) {
             console.log(err);
           }
         }
       );
-      
-      
-    
     });
   }).exec((err, posts) => {
     if (err) {
-      console.log(err)
+      console.log(err);
     }
-   
-   
-
   });
   var mysort = { score: -1 };
-      Post.find({}).populate('postedBy').populate('comments.postedBy').populate('comments.incomments.postedBy').populate("comments.likes").sort(mysort).exec((er,result)=>{
-        if (er) res.json(er)
-        else
-          res.json(result)
-      })
+  Post.find({})
+    .populate("postedBy")
+    .populate("comments.postedBy")
+    .populate("comments.incomments.postedBy")
+    .populate("comments.likes")
+    .sort(mysort).limit(10)
+    .exec((er, result) => {
+      if (er) res.json(er);
+      else res.json(result);
+    });
 };
 
 module.exports = {
@@ -335,5 +332,5 @@ module.exports = {
   commentincomment,
   trendingposts,
   unlikeacomment,
-  uncommentincomment
+  uncommentincomment,
 };

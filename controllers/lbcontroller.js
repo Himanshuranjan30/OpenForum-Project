@@ -33,7 +33,7 @@ const leaderboard = (req, res) => {
   });
   var mysort = { score: -1 };
   User.find()
-    .sort(mysort)
+    .sort(mysort).limit(10)
     .exec((errrr, result) => {
       if (errrr) console.log("error");
       else res.json(result);
