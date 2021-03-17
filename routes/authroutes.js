@@ -65,14 +65,7 @@ router
               config.jwtSecret
             );
 
-            res.cookie("t", token, {
-              expire: new Date() + 9999,
-            });
-
-            return res.json({
-              token,
-              user: { _id: result._id, name: result.name, email: result.email },
-            });
+            res.redirect("http://localhost:3000/login?token=" + token);
           }
         });
       } else {
@@ -83,18 +76,7 @@ router
           config.jwtSecret
         );
 
-        res.cookie("t", token, {
-          expire: new Date() + 9999,
-        });
-
-        return res.json({
-          token,
-          user: {
-            _id: userdata._id,
-            name: userdata.name,
-            email: userdata.email,
-          },
-        });
+        res.redirect("http://localhost:3000/login?token=" + token);
       }
     }
   );
