@@ -6,7 +6,7 @@ const request = require('supertest');
 const {app} = require('../app');
 const User = require('../models/user');
 
-var userId, token, otherUserId;
+var userId, token, otherUserId,users
 
 describe('New user creation', () => {
   it('Successfully signed up', (done) => {
