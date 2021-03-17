@@ -279,7 +279,7 @@ const trendingposts = (req, res) => {
   Post.find({}, function (err, docs) {
     if (docs.length == 0) 
        return res.send({message:"No posts"});
-    
+    else{
     docs.forEach(function (data) {
       var id = data.id;
       var likes = data.likes.length;
@@ -297,7 +297,7 @@ const trendingposts = (req, res) => {
           }
         }
       );
-    });
+    });}
   }).exec((err, posts) => {
     if (err) {
       console.log(err);
