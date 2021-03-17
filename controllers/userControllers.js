@@ -23,8 +23,9 @@ const uploadaimage=(req,res)=>{
     if (perr) {
       console.log("Error uploading data: ", perr);
     } else {
+      console.log(String(pres.Location))
       User.findByIdAndUpdate(req.query.id,{$set:{
-        photo:pres.location
+        photo:pres.Location
       }}).exec()
       res.send(pres)
     }
@@ -126,12 +127,12 @@ const remove = async (req, res) => {
   }
 };
 
-const photo = (req, res, next) => {
-  if (req.profile.photo.data) {
-    res.set("Content-Type", req.profile.photo.contentType);
-    return res.send(req.profile.photo.data);
-  }
-  next();
+const photo = async(req, res, next) => {
+ let result= await User.findById(req.query.id,{photo:1,_id:0})
+  if(result)
+     res.json(result)
+  else
+    next();
 };
 
 const defaultPhoto = (req, res) => {
