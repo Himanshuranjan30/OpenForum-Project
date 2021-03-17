@@ -23,9 +23,9 @@ const uploadaimage=(req,res)=>{
     if (perr) {
       console.log("Error uploading data: ", perr);
     } else {
-      User.findByIdAndUpdate(req.query.id,{
+      User.findByIdAndUpdate(req.query.id,{$set:{
         photo:pres["location"]
-      }).exec()
+      }}).exec()
       res.send(pres)
     }
   });
