@@ -275,11 +275,9 @@ const updateScore = (userId, points) => {
   );
 };
 
-const trendingposts = (req, res) => {
+const trendingposts = async(req, res) => {
   Post.find({}, function (err, docs) {
-    if (docs.length == 0) 
-       return res.send({message:"No posts"});
-    else{
+   
     docs.forEach(function (data) {
       var id = data.id;
       var likes = data.likes.length;
@@ -297,24 +295,22 @@ const trendingposts = (req, res) => {
           }
         }
       );
-    });}
+    });
   }).exec((err, posts) => {
     if (err) {
       console.log(err);
     }
   });
   var mysort = { score: -1 };
-  Post.find({})
+ const data= await Post.find({})
     .populate("postedBy")
     .populate("comments.postedBy")
     .populate("comments.incomments.postedBy")
     .populate("comments.likes")
     .sort(mysort)
     .limit(10)
-    .exec((er, result) => {
-      
-      res.json(result);
-    });
+   
+    res.send(data)
 };
 
 module.exports = {
