@@ -84,7 +84,7 @@ router
 router.get("/logout", (req, res) => {
   res.clearCookie("t");
   return res.status("200").json({
-    message: "signed out",
+    message: "signed out successfully",
   });
 });
 
