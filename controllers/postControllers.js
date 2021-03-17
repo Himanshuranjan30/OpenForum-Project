@@ -311,8 +311,10 @@ const trendingposts = (req, res) => {
     .sort(mysort)
     .limit(10)
     .exec((er, result) => {
-      if (er) return res.json(er);
-      else return res.json(result);
+      if (er) 
+        return res.json(er);
+      else 
+        return res.json(result);
     });
 };
 
