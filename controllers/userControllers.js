@@ -23,7 +23,7 @@ const uploadaimage=(req,res)=>{
     if (perr) {
       console.log("Error uploading data: ", perr);
     } else {
-      User.update({id:req.query.id},{
+      User.updateOne({id:req.query.id},{
         photo:pres["location"]
       }).exec()
       res.send(pres)
