@@ -3,14 +3,13 @@ const User = require("../models/user");
 const fs = require("fs");
 const formidable = require("formidable");
 
-
 const create = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "Image could not be uploaded",
+        error: "Image couldn't be uploaded",
       });
     }
     let post = new Post(fields);
@@ -308,7 +307,8 @@ const trendingposts = (req, res) => {
     .populate("comments.postedBy")
     .populate("comments.incomments.postedBy")
     .populate("comments.likes")
-    .sort(mysort).limit(10)
+    .sort(mysort)
+    .limit(10)
     .exec((er, result) => {
       if (er) res.json(er);
       else res.json(result);
