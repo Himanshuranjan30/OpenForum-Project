@@ -1,4 +1,5 @@
 # Open Forum Social
+[![Build Status](https://travis-ci.com/Himanshuranjan30/OpenForum-Project.svg?branch=development)](https://travis-ci.com/Himanshuranjan30/OpenForum-Project)
 
 A web application providing a platform for users to socialize.
 
