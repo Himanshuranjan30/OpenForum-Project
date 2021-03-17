@@ -277,7 +277,7 @@ const updateScore = (userId, points) => {
 
 const trendingposts = (req, res) => {
   Post.find({}, function (err, docs) {
-    if (docs.length == 0) return res.send("No posts");
+    if (docs.length == 0) return res.json({message:"No posts"});
     
     docs.forEach(function (data) {
       var id = data.id;
