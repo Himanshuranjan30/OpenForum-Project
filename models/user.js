@@ -55,9 +55,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  photo: {
-    type:String,
-    default:"No Photo"
+  photo: {type:String,
+  default:"No image",
+  required:true
   },
   following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],

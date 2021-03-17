@@ -2,22 +2,6 @@ const express = require("express");
 const userCtrl = require("../controllers/userControllers");
 const authCtrl=require('../controllers/authControllers')
 const lbcontrol=require('../controllers/lbcontroller')
-const multer=require('multer')
-const path=require('path')
-const diskStorage=multer.diskStorage({
-  destination:(req,file,cb)=>{
-    cb(null,'../userimages')
-
-  },
-  filename:(req,file,cb)=>{
-    cb(null,req.query.id+path.extname(file.originalname))
-  }
-
-})
-
-const upload=multer({storage:diskStorage})
-
-
 
 
 const router = express.Router();
@@ -51,7 +35,7 @@ router
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.remove);
 
 router.route("/leaderboard").get(lbcontrol.leaderboard)
-
+router.route("/addphoto").put(userCtrl.uploadaimage)
 
 router.param("userId", userCtrl.userByID);
 

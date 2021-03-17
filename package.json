@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-s3": "^2.0.5",
+    "aws-sdk": "^2.865.0",
     "body-parser": "^1.19.0",
     "connect-mongo": "^4.4.0",
     "connect-mongodb-session": "^2.4.1",
