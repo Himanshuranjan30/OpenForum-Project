@@ -41,6 +41,7 @@ router.route("/api/post/uncommentincomment").put(postCtrl.uncommentincomment)
 
 router.route("/trendingposts").get(postCtrl.trendingposts)
 
+
 router.param("userId", userCtrl.userByID);
 router.param("postId", postCtrl.postByID);
 

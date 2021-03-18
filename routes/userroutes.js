@@ -33,9 +33,10 @@ router
   .get(authCtrl.requireSignin, userCtrl.read)
   .put(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.update)
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.remove);
-
+router.route('/api/users/followers/:userId').get(userCtrl.getfollowers)
+router.route('/api/users/following/:userId').get(userCtrl.getfollowing)
 router.route("/leaderboard").get(lbcontrol.leaderboard)
-router.route("/addphoto").put(userCtrl.uploadaimage)
+router.route("/addphoto").put(authCtrl.requireSignin,userCtrl.uploadaimage)
 
 router.param("userId", userCtrl.userByID);
 

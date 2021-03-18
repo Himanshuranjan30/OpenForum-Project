@@ -17,7 +17,8 @@ const uploadaimage=(req,res)=>{
   var params = {
     Bucket: 'imagestoreopenforum',
     Key: "userimages/"+Math.random().toString(36).substring(7)+path.extname(req.files['photo'].name),
-    Body: req.files['photo'].data
+    Body: req.files['photo'].data,
+    ACL:'public-read'
   };
   s3.upload(params, function (perr, pres) {
     if (perr) {
@@ -229,6 +230,28 @@ const updateScore = (userId, points) => {
   );
 };
 
+const getfollowers=async(req,res)=>{
+  let followers=await User.findById(req.profile.id,{followers:1})
+  if(followers)
+  {
+    res.json({followerscount:followers.followers.length})
+  }
+  else
+     res.send("error fetching followers")
+
+}
+const getfollowing=async(req,res)=>{
+  let following=await User.findById(req.profile.id,{following:1})
+  if(following)
+  {
+    res.json({followingcount:following.following.length})
+  }
+  else
+     res.send("error fetching followings")
+
+}
+
+
 module.exports={
   create,
   userByID,
@@ -243,5 +266,7 @@ module.exports={
   removeFollowing,
   removeFollower,
   findPeople,
-  uploadaimage
+  uploadaimage,
+  getfollowers,
+  getfollowing
 };
