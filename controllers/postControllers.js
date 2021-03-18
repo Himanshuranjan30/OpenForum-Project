@@ -14,6 +14,7 @@ const create = (req, res, next) => {
   let post = new Post();
   post.title = req.query.title;
   post.text = req.query.text;
+  post.postedBy=req.profile.id
   var params = {
     Bucket: "imagestoreopenforum",
     Key: "postimages/" +Math.random().toString(36).substring(7)+ path.extname(req.files["photo"].name),
