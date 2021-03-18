@@ -2,7 +2,13 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const fs = require("fs");
 const formidable = require("formidable");
+const AWS = require('aws-sdk');
+const path=require('path')
 
+const s3 = new AWS.S3({
+  accessKeyId: "AKIA3CSDG2AGV2FKEPXF",
+  secretAccessKey:"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"
+});
 const create = (req, res, next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
@@ -16,9 +22,22 @@ const create = (req, res, next) => {
     post.postedBy = req.profile;
     post.username = String(req.profile.name);
     if (files.photo) {
-      post.photo.data = fs.readFileSync(files.photo.path);
-      post.photo.contentType = files.photo.type;
-      post.hasphoto = 1;
+      var params = {
+        Bucket: 'imagestoreopenforum',
+        Key: "postimages/"+req.profile.id+path.extname(req.files['photo'].name),
+        Body: req.files.photo
+      };
+      s3.upload(params, function (perr, pres) {
+        if (perr) {
+          console.log("Error uploading data: ", perr);
+        } else {
+          console.log(String(pres.Location))
+          Post.findByIdAndUpdate(req.profile.id,{$set:{
+            photo:pres.Location
+          }}).exec()
+          res.send(pres)
+        }
+      });
     } else post.hasphoto = 0;
     post.save((err, result) => {
       if (err) {

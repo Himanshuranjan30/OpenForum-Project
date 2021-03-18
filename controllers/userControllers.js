@@ -16,7 +16,7 @@ const s3 = new AWS.S3({
 const uploadaimage=(req,res)=>{
   var params = {
     Bucket: 'imagestoreopenforum',
-    Key: req.query.id+path.extname(req.files['photo'].name),
+    Key: "userimages/"+req.query.id+path.extname(req.files['photo'].name),
     Body: req.files['photo'].data
   };
   s3.upload(params, function (perr, pres) {
