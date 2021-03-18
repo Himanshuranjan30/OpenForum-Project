@@ -26,16 +26,15 @@ const create = (req, res, next) => {
       var params = {
         Bucket: 'imagestoreopenforum',
         Key: "postimages/"+req.profile.id+path.extname(req.files['photo'].name),
-        Body: files.photo
+        Body: fs.readFileSync(files.photo.path)
       };
       s3.upload(params, function (perr, pres) {
         if (perr) {
           console.log("Error uploading data: ", perr);
         } else {
           console.log(String(pres.Location))
-          Post.findByIdAndUpdate(req.profile.id,{$set:{
-            photo:pres.Location
-          }}).exec()
+          post.photo=pres.Location
+          post.save()
           res.send(pres)
         }
       });
