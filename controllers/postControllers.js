@@ -4,11 +4,11 @@ const fs = require("fs");
 const formidable = require("formidable");
 const AWS = require("aws-sdk");
 const path = require("path");
-const { PresignedPost } = require("aws-sdk/clients/s3");
+const config=require('../config')
 
 const s3 = new AWS.S3({
-  accessKeyId: "AKIA3CSDG2AGV2FKEPXF",
-  secretAccessKey: "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",
+  accessKeyId: config.awsid,
+  secretAccessKey: config.awssecret,
 });
 const create = (req, res, next) => {
   let post = new Post();

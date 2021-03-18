@@ -4,10 +4,10 @@ const fs = require("fs");
 const extend = require("extend");
 const AWS = require('aws-sdk');
 const path=require('path')
-
+const config=require('../config')
 const s3 = new AWS.S3({
-  accessKeyId: "AKIA3CSDG2AGV2FKEPXF",
-  secretAccessKey:"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"
+  accessKeyId: config.awsid,
+  secretAccessKey:config.awssecret
 });
 
 

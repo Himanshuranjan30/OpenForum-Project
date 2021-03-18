@@ -7,6 +7,8 @@ const config = {
   mongoTestUri: process.env.MONGODB_TEST_URI,
   clientid: process.env.GOOGLE_CLIENT_ID,
   clientsecret: process.env.GOOGLE_CLIENT_SECRET,
+  awsid:process.env.AWS_ID,
+  awssecret:process.env.AWS_SECRET
 };
 
 module.exports = config;
