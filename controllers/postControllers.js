@@ -2,54 +2,39 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const fs = require("fs");
 const formidable = require("formidable");
-const AWS = require('aws-sdk');
-const path=require('path')
+const AWS = require("aws-sdk");
+const path = require("path");
+const { PresignedPost } = require("aws-sdk/clients/s3");
 
 const s3 = new AWS.S3({
   accessKeyId: "AKIA3CSDG2AGV2FKEPXF",
-  secretAccessKey:"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"
+  secretAccessKey: "U/AkQEBQZ/HXeckLsBjnWobGX3/7lZS4g2PE4kxK",
 });
 const create = (req, res, next) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-  form.parse(req, (err, fields, files) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Image couldn't be uploaded",
-      });
-    }
-    let post = new Post(fields);
-    post.postedBy = req.profile;
-    post.username = String(req.profile.name);
-    console.log(file.photo)
-    if (files.photo) {
-      var params = {
-        Bucket: 'imagestoreopenforum',
-        Key: "postimages/"+req.profile.id+path.extname(req.files['photo'].name),
-        Body: fs.readFileSync(files.photo.path)
-      };
-      s3.upload(params, function (perr, pres) {
-        if (perr) {
-          console.log("Error uploading data: ", perr);
-        } else {
-          console.log(String(pres.Location))
-          post.photo=pres.Location
-          post.save()
-          res.send(pres)
-        }
-      });
-    } else post.hasphoto = 0;
-    post.save((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: err,
-        });
-      }
-      updateScore(req.profile._id, 2);
-      res.json(result);
-    });
-  });
-};
+  let post = new Post();
+  post.title = req.query.title;
+  post.text = req.query.text;
+  var params = {
+    Bucket: "imagestoreopenforum",
+    Key: "postimages/" +Math.random().toString(36).substring(7)+ path.extname(req.files["photo"].name),
+    Body: req.files["photo"].data,
+  };
+  s3.upload(params, function (perr, pres) {
+    if (perr) {
+      console.log("Error uploading data: ", perr);
+    } else {
+      console.log(String(pres.Location));
+      console.log(pres);
+      post.photo=pres.Location
+      post.save((err, result) => {
+        if(err)
+          res.json(err)
+        else
+          res.json(result);
+      
+    })
+  
+};})}
 
 const postByID = (req, res, next, id) => {
   Post.findById(id)
@@ -120,8 +105,8 @@ const remove = (req, res) => {
 };
 
 const photo = (req, res, next) => {
-  res.set("Content-Type", req.post.photo.contentType);
-  return res.send(req.post.photo.data);
+  
+  return res.send(req.post.photo);
 };
 
 const like = (req, res) => {
@@ -294,9 +279,8 @@ const updateScore = (userId, points) => {
   );
 };
 
-const trendingposts = async(req, res) => {
+const trendingposts = async (req, res) => {
   Post.find({}, function (err, docs) {
-   
     docs.forEach(function (data) {
       var id = data.id;
       var likes = data.likes.length;
@@ -321,15 +305,15 @@ const trendingposts = async(req, res) => {
     }
   });
   var mysort = { score: -1 };
- const data= await Post.find({})
+  const data = await Post.find({})
     .populate("postedBy")
     .populate("comments.postedBy")
     .populate("comments.incomments.postedBy")
     .populate("comments.likes")
     .sort(mysort)
-    .limit(10)
-   
-    res.send(data)
+    .limit(10);
+
+  res.send(data);
 };
 
 module.exports = {
@@ -349,4 +333,4 @@ module.exports = {
   trendingposts,
   unlikeacomment,
   uncommentincomment,
-};
+}
