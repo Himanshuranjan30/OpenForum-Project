@@ -15,6 +15,7 @@ const create = (req, res, next) => {
   post.title = req.query.title;
   post.text = req.query.text;
   post.postedBy=req.profile.id
+  console.log(req.files)
   if(req.files)
   {
   var params = {
