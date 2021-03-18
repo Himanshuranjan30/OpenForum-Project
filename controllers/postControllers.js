@@ -4,7 +4,7 @@ const fs = require("fs");
 const formidable = require("formidable");
 const AWS = require("aws-sdk");
 const path = require("path");
-const config=require('../config')
+const config = require("../config");
 
 const s3 = new AWS.S3({
   accessKeyId: config.awsid,
@@ -155,10 +155,11 @@ const likeacomment = (req, res) => {
       "comments.text": req.body.comment,
       "comments.postedBy": req.body.postedBy,
     },
-    { $push: { "comments.$.likes": req.body.userId } },{
-      new: true
+    { $push: { "comments.$.likes": req.body.userId } },
+    {
+      new: true,
     }
-  ).exec((err, result) => {
+  ).populate("comments.postedBy").exec((err, result) => {
     if (err) {
       return res.status(400).json({
         error: err,
@@ -175,10 +176,11 @@ const unlikeacomment = (req, res) => {
       "comments.text": req.body.comment,
       "comments.postedBy": req.body.postedBy,
     },
-    { $pull: { "comments.$.likes": req.body.userId } },{
-      new: true
+    { $pull: { "comments.$.likes": req.body.userId } },
+    {
+      new: true,
     }
-  ).exec((err, result) => {
+  ).populate("comments.postedBy").exec((err, result) => {
     if (err) {
       return res.status(400).json({
         error: err,
@@ -323,8 +325,7 @@ const trendingposts = async (req, res) => {
     .populate("comments.postedBy")
     .populate("comments.incomments.postedBy")
     .populate("comments.likes")
-    .sort(mysort)
-    
+    .sort(mysort);
 
   res.send(data);
 };
