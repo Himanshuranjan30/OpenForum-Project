@@ -106,7 +106,7 @@ const remove = (req, res) => {
 
 const photo = (req, res, next) => {
   
-  return res.send(req.post.photo);
+  return res.json(req.post.photo);
 };
 
 const like = (req, res) => {
