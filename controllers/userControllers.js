@@ -98,7 +98,7 @@ const update = (req, res) => {
     } else {
       console.log(String(pres.Location));
       console.log(pres);
-      post.photo=pres.Location
+      user.photo=pres.Location
       user.save((err, result) => {
         if(err)
           res.json(err)
