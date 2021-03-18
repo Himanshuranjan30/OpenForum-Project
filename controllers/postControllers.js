@@ -4,7 +4,7 @@ const fs = require("fs");
 const formidable = require("formidable");
 const AWS = require("aws-sdk");
 const path = require("path");
-const config = require("../config");
+const config=require('../config')
 
 const s3 = new AWS.S3({
   accessKeyId: config.awsid,
@@ -110,10 +110,7 @@ const remove = (req, res) => {
         error: err,
       });
     }
-  });
-  Post.find({}, function (err, result) {
-    if (err) res.json(err);
-    else res.json(result);
+    res.json(deletedPost);
   });
 };
 
@@ -322,7 +319,8 @@ const trendingposts = async (req, res) => {
     .populate("comments.postedBy")
     .populate("comments.incomments.postedBy")
     .populate("comments.likes")
-    .sort(mysort);
+    .sort(mysort)
+    
 
   res.send(data);
 };
