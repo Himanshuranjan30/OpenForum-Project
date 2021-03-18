@@ -65,7 +65,7 @@ router
               config.jwtSecret
             );
 
-            res.redirect("http://localhost:3000/login?token=" + token);
+            res.redirect("https://open-forum-frontend.herokuapp.com/login?token=" + token);
           }
         });
       } else {
@@ -76,7 +76,7 @@ router
           config.jwtSecret
         );
 
-        res.redirect("http://localhost:3000/login?token=" + token);
+        res.redirect("https://open-forum-frontend.herokuapp.com/login?token=" + token);
       }
     }
   );
