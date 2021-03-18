@@ -10,8 +10,9 @@ const PostSchema = new mongoose.Schema({
     required: "Title is required",
   },
   photo: {
-    Type: String,
-    required: true
+    type: String,
+    required:true
+   
   },
   hasphoto: Boolean,
   likes: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
