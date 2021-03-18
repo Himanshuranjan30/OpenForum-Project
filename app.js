@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cookieparser = require("cookie-parser");
 const cors = require("cors");
 const path = require("path");
-
+const fileUpload=require('express-fileupload')
 require("dotenv").config();
 const userRoutes = require("./routes/userroutes");
 const authRoutes = require("./routes/authroutes");
@@ -18,6 +18,7 @@ var allowedDomains = [
   "http://localhost:3000",
   "https://openforumsocial.herokuapp.com/auth/google/callback",
 ];
+app.use(fileUpload());
 app.use(
   cors({
     origin: function (origin, callback) {
