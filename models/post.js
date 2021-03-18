@@ -11,6 +11,8 @@ const PostSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
+    required:true,
+    default:"No photo"
    
   },
   hasphoto: Boolean,
