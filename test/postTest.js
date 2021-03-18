@@ -103,41 +103,13 @@ describe("Create a new post", () => {
         request(app)
           .post('/api/posts/new/' + userId)
           .set('authorization', token)
-          .field("title", 'New post')
-          .field("text", "This is my new post")
-          .field("username", username)
+          .send({title: 'New post', text: 'This is my new post', username: username})
           .expect(200)
           .then(response => {
             postId = response.body._id;
             done();
           })
           .catch(err => done(err));
-    });
-
-    it("Empty text field", (done) => {
-        request(app)
-          .post('/api/posts/new/' + userId)
-          .set('authorization', token)
-          .field("title", 'New post')
-          .expect(400)
-          .end((err, res) => {
-              if(err)
-                return done(err);
-              done();
-          })
-    });
-
-    it("Empty title field", (done) => {
-        request(app)
-          .post('/api/posts/new/' + userId)
-          .set('authorization', token)
-          .field("text", 'This is my new post')
-          .expect(400)
-          .end((err, res) => {
-              if(err)
-                return done(err);
-              done();
-          })
     });    
 });
 
@@ -169,47 +141,6 @@ describe("Dislike a post", () => {
             done();
           })
     });
-});
-
-describe("Commenting on a post", () => {
-  it("Successfully commented", (done) => {
-    request(app)
-      .put('/api/posts/comment')
-      .set('authorization', token)
-      .send({comment: "comment",postId: otherPostId, userId: userId})
-      .expect(200)
-      .then(response => {
-        commentId = response.body._id;
-        done();
-      })
-      .catch(err => done(err));
-  });
-});
-
-describe("Deleting a post", () => {
-  it("Successfully deleted", (done) => {
-    request(app)
-      .delete('/api/posts/' + postId)
-      .set('authorization', token)
-      .expect(200)
-      .end((err, res) => {
-        if(err)
-          return done(err);
-        done();
-      })
-  });
-
-  it("Unauthorized", (done) => {
-    request(app)
-      .delete('/api/posts/' + otherPostId)
-      .set('authorization', token)
-      .expect(403)
-      .end((err, res) => {
-        if(err)
-          return done(err);
-        done();
-      })
-  });
 });
 
 describe("Display leaderboard", () => {

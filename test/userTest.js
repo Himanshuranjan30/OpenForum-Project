@@ -110,7 +110,7 @@ describe('User signin', () => {
 describe("Get user's profile photo", () => {
   it("Successfully fetched", (done) => {
     request(app)
-      .get('/api/users/photo/' + userId)
+      .get('/api/users/photo')
       .expect(200)
       .end((err, res) => {
         if(err)
@@ -246,21 +246,6 @@ describe("Find people", () => {
         request(app)
           .get('/api/users/findpeople/' + userId)
           .set('authorization', token)
-          .expect(200)
-          .end((err, res) => {
-            if(err)
-              return done(err);
-            done();
-          });
-    });
-});
-
-describe("Update user profile", () => {
-    it("Successfully updated", (done) => {
-        request(app)
-          .put('/api/users/' + userId)
-          .set('authorization', token)
-          .field({name: "XYZ"})
           .expect(200)
           .end((err, res) => {
             if(err)
