@@ -320,7 +320,7 @@ const trendingposts = async (req, res) => {
     .populate("comments.incomments.postedBy")
     .populate("comments.likes")
     .sort(mysort)
-    .limit(10);
+    
 
   res.send(data);
 };
