@@ -21,11 +21,12 @@ const create = (req, res, next) => {
     let post = new Post(fields);
     post.postedBy = req.profile;
     post.username = String(req.profile.name);
+    console.log(file.photo)
     if (files.photo) {
       var params = {
         Bucket: 'imagestoreopenforum',
         Key: "postimages/"+req.profile.id+path.extname(req.files['photo'].name),
-        Body: req.files.photo
+        Body: files.photo
       };
       s3.upload(params, function (perr, pres) {
         if (perr) {
