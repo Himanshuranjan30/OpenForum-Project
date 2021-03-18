@@ -33,6 +33,7 @@ const create = (req, res, next) => {
     }
   
 })}
+console.log(post.photo)
 post.save((err, result) => {
   if(err)
     res.json(err)
