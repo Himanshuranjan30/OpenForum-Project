@@ -155,7 +155,9 @@ const likeacomment = (req, res) => {
       "comments.text": req.body.comment,
       "comments.postedBy": req.body.postedBy,
     },
-    { $push: { "comments.$.likes": req.body.userId } }
+    { $push: { "comments.$.likes": req.body.userId } },{
+      new: true
+    }
   ).exec((err, result) => {
     if (err) {
       return res.status(400).json({
@@ -173,7 +175,9 @@ const unlikeacomment = (req, res) => {
       "comments.text": req.body.comment,
       "comments.postedBy": req.body.postedBy,
     },
-    { $pull: { "comments.$.likes": req.body.userId } }
+    { $pull: { "comments.$.likes": req.body.userId } },{
+      new: true
+    }
   ).exec((err, result) => {
     if (err) {
       return res.status(400).json({

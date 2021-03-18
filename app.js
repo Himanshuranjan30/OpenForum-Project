@@ -17,6 +17,7 @@ var allowedDomains = [
   "https://accounts.google.com/o/oauth2/v2/auth",
   "http://localhost:3000",
   "https://openforumsocial.herokuapp.com/auth/google/callback",
+  "https://open-forum-frontend.herokuapp.com"
 ];
 app.use(fileUpload());
 app.use(
