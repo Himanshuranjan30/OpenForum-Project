@@ -84,32 +84,30 @@ const list = async (req, res) => {
 };
 
 const update = (req, res) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-  form.parse(req, (err, fields, files) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Photo could not be uploaded",
-      });
-    }
-    let user = req.profile;
-    user = extend(user, fields);
-    user.updated = Date.now();
-    if (files.photo) {
-      user.photo.data = fs.readFileSync(files.photo.path);
-      user.photo.contentType = files.photo.type;
-    }
-    user.save((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: errorHandler.getErrorMessage(err)
-        })
-      }
-      user.hashed_password = undefined
-      user.salt = undefined
-      res.json(user)
+  let user = req.profile
+  user.name = req.query.name;
+  user.email = req.query.email;
+  var params = {
+    Bucket: "imagestoreopenforum",
+    Key: "userimages/" +req.profile.id+ path.extname(req.files["photo"].name),
+    Body: req.files["photo"].data,
+  };
+  s3.upload(params, function (perr, pres) {
+    if (perr) {
+      console.log("Error uploading data: ", perr);
+    } else {
+      console.log(String(pres.Location));
+      console.log(pres);
+      post.photo=pres.Location
+      user.save((err, result) => {
+        if(err)
+          res.json(err)
+        else
+          res.json(result);
+      
     })
-  })
+  
+};})
   }
 
 
