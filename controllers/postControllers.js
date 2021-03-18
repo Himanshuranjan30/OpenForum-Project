@@ -15,6 +15,8 @@ const create = (req, res, next) => {
   post.title = req.query.title;
   post.text = req.query.text;
   post.postedBy=req.profile.id
+  if(req.files)
+  {
   var params = {
     Bucket: "imagestoreopenforum",
     Key: "postimages/" +Math.random().toString(36).substring(7)+ path.extname(req.files["photo"].name),
@@ -27,15 +29,17 @@ const create = (req, res, next) => {
       console.log(String(pres.Location));
       console.log(pres);
       post.photo=pres.Location
-      post.save((err, result) => {
-        if(err)
-          res.json(err)
-        else
-          res.json(result);
-      
-    })
+    }
   
-};})}
+})}
+post.save((err, result) => {
+  if(err)
+    res.json(err)
+  else
+    res.json(result);
+
+})
+}
 
 const postByID = (req, res, next, id) => {
   Post.findById(id)
