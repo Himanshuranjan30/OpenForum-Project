@@ -14,34 +14,37 @@ const create = (req, res, next) => {
   let post = new Post();
   post.title = req.query.title;
   post.text = req.query.text;
-  post.postedBy=req.profile.id
-  console.log(req.files)
-  if(req.files)
-  {
-  var params = {
-    Bucket: "imagestoreopenforum",
-    Key: "postimages/" +Math.random().toString(36).substring(7)+ path.extname(req.files["photo"].name),
-    Body: req.files["photo"].data,
-  };
-  s3.upload(params, function (perr, pres) {
-    if (perr) {
-      console.log("Error uploading data: ", perr);
-    } else {
-      console.log(String(pres.Location));
-      console.log(pres);
-      post.photo=pres.Location
-    }
-  
-})}
-console.log(post.photo)
-post.save((err, result) => {
-  if(err)
-    res.json(err)
-  else
-    res.json(result);
-
-})
-}
+  post.postedBy = req.profile.id;
+  console.log(req.files);
+  if (req.files) {
+    var params = {
+      Bucket: "imagestoreopenforum",
+      Key:
+        "postimages/" +
+        Math.random().toString(36).substring(7) +
+        path.extname(req.files["photo"].name),
+      Body: req.files["photo"].data,
+    };
+    s3.upload(params, function (perr, pres) {
+      if (perr) {
+        console.log("Error uploading data: ", perr);
+      } else {
+        console.log(String(pres.Location));
+        console.log(pres);
+        post.photo = pres.Location;
+        post.save((err, result) => {
+          if (err) res.json(err);
+          else res.json(result);
+        });
+      }
+    });
+  } else {
+    post.save((err, result) => {
+      if (err) res.json(err);
+      else res.json(result);
+    });
+  }
+};
 
 const postByID = (req, res, next, id) => {
   Post.findById(id)
@@ -112,7 +115,6 @@ const remove = (req, res) => {
 };
 
 const photo = (req, res, next) => {
-  
   return res.json(req.post.photo);
 };
 
@@ -340,4 +342,4 @@ module.exports = {
   trendingposts,
   unlikeacomment,
   uncommentincomment,
-}
+};
