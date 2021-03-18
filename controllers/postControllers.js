@@ -24,6 +24,7 @@ const create = (req, res, next) => {
         Math.random().toString(36).substring(7) +
         path.extname(req.files["photo"].name),
       Body: req.files["photo"].data,
+      ACL:'public-read'
     };
     s3.upload(params, function (perr, pres) {
       if (perr) {
