@@ -300,11 +300,27 @@ const trendingposts = async (req, res) => {
     docs.forEach(function (data) {
       var id = data.id;
       var likes = data.likes.length;
-
+      var userid=data.postedBy
       var comments = data.comments.length;
       const date2 = new Date();
       const diffTime = Math.abs(date2 - data.created);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const scoretoupdate = (likes * comments) / diffDays;
+      const score = await User.findById(userid, { score: 1 });
+      console.log(score.score);
+      let badgetoupdate = "Level 1 Contributor";
+      if (score.score + scoretoupdate >= 500)
+        badgetoupdate = "Level 3 Contributor";
+      else if (score.score + scoretoupdate > 200 && score + scoretoupdate < 500)
+        badgetoupdate = "Level 2 Contributor";
+      User.findByIdAndUpdate(
+          userid,
+          { $set: { badge: badgetoupdate } },
+          function (error, result) {
+            if (error) console.log(error);
+          }
+        );
+
       Post.findByIdAndUpdate(
         id,
         { $inc: { score: (likes * comments) / diffDays } },
