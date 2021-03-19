@@ -15,7 +15,7 @@ const leaderboard = (req, res) => {
       const scoretoupdate = (likes * comments) / diffDays;
       const score = await User.findById(userid, { score: 1 });
 
-      let badgetoupdate = "Level 1 Contributor";
+      var badgetoupdate = "Level 1 Contributor";
       
       if ((score.score + scoretoupdate) > 200 && (score + scoretoupdate) < 500)
         badgetoupdate = "Level 2 Contributor";
