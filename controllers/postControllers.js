@@ -1,7 +1,7 @@
 const Post = require("../models/post");
 const User = require("../models/user");
 const fs = require("fs");
-const formidable = require("formidable");
+
 const AWS = require("aws-sdk");
 const path = require("path");
 const config = require("../config");
@@ -15,7 +15,7 @@ const create = (req, res, next) => {
   post.title = req.query.title;
   post.text = req.query.text;
   post.postedBy = req.profile.id;
-  console.log(req.files);
+
   if (req.files) {
     var params = {
       Bucket: "imagestoreopenforum",
@@ -30,8 +30,7 @@ const create = (req, res, next) => {
       if (perr) {
         console.log("Error uploading data: ", perr);
       } else {
-        console.log(String(pres.Location));
-        console.log(pres);
+        
         post.photo = pres.Location;
         post.save((err, result) => {
           if (err) res.json(err);
@@ -307,7 +306,7 @@ const trendingposts = async (req, res) => {
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       const scoretoupdate = (likes * comments) / diffDays;
       const score = await User.findById(userid, { score: 1 });
-      console.log(score.score);
+      
       let badgetoupdate = "Level 1 Contributor";
       if (score.score + scoretoupdate >= 500)
         badgetoupdate = "Level 3 Contributor";
