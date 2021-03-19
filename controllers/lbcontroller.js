@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 const leaderboard = (req, res) => {
   Post.find({}, function (err, docs) {
-    docs.forEach(function (data) {
+    docs.forEach(async function (data) {
       var userid = data.postedBy;
       var likes = data.likes.length;
 
@@ -12,11 +12,20 @@ const leaderboard = (req, res) => {
       const date2 = new Date();
       const diffTime = Math.abs(date2 - data.created);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      
+      const scoretoupdate = (likes * comments) / diffDays;
+      const score = await User.findById(userid, { score: 1 });
+      console.log(score.score);
+      let badgetoupdate = "Level 1 Contributor";
+      if (score.score + scoretoupdate >= 500)
+        badgetoupdate = "Level 3 Contributor";
+      else if (score.score + scoretoupdate > 200 && score + scoretoupdate < 500)
+        badgetoupdate = "Level 2 Contributor";
+
       User.findByIdAndUpdate(
         userid,
-        {$inc:{ score: (likes*comments) / diffDays }},
+        {
+          $inc: { score: (likes * comments) / diffDays, badge: badgetoupdate },
+        },
         function (errr, doc) {
           if (errr) {
             console.log(err);
@@ -33,7 +42,8 @@ const leaderboard = (req, res) => {
   });
   var mysort = { score: -1 };
   User.find()
-    .sort(mysort).limit(10)
+    .sort(mysort)
+    .limit(10)
     .exec((errrr, result) => {
       if (errrr) console.log("error");
       else res.json(result);
