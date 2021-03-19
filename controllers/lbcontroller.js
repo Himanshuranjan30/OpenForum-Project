@@ -24,12 +24,19 @@ const leaderboard = (req, res) => {
       User.findByIdAndUpdate(
         userid,
         {
-          $inc: { score: (likes * comments) / diffDays},$set:{badge:badgetoupdate}
+          $inc: { score: (likes * comments) / diffDays },
         },
         function (errr, doc) {
           if (errr) {
             console.log(err);
           }
+        }
+      );
+      User.findByIdAndUpdate(
+        userid,
+        { $set: { badge: badgetoupdate } },
+        function (error, result) {
+          if (error) console.log(error);
         }
       );
     });
