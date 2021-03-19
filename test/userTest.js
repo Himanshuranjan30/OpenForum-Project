@@ -223,6 +223,54 @@ describe("Follow a user", () => {
     });
 });
 
+describe("Get followers of the user", () => {
+  it("Successfully fetched", (done) => {
+    request(app)
+      .get('/api/users/followers/' + otherUserId)
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
+
+  it("Successfully fetched", (done) => {
+    request(app)
+      .get('/api/users/followers/' + userId)
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
+});
+
+describe("Get following of the user", () => {
+  it("Successfully fetched", (done) => {
+    request(app)
+      .get('/api/users/following/' + otherUserId)
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
+
+  it("Successfully fetched", (done) => {
+    request(app)
+      .get('/api/users/following/' + userId)
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
+});
+
 describe("Unfollow a user", () => {
     it("Successfully unfollowed", (done) => {
         request(app)
