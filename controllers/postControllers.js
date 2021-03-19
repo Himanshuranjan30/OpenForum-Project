@@ -297,7 +297,7 @@ const updateScore = (userId, points) => {
 
 const trendingposts = async (req, res) => {
   Post.find({}, function (err, docs) {
-    docs.forEach(function (data) {
+    docs.forEach(async function (data) {
       var id = data.id;
       var likes = data.likes.length;
       var userid=data.postedBy
