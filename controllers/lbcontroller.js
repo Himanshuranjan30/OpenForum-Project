@@ -16,10 +16,11 @@ const leaderboard = (req, res) => {
       const score = await User.findById(userid, { score: 1 });
 
       let badgetoupdate = "Level 1 Contributor";
-      if (score.score + scoretoupdate >= 500)
-        badgetoupdate = "Level 3 Contributor";
-      else if ((score.score + scoretoupdate) > 200 && (score + scoretoupdate) < 500)
+      
+      if ((score.score + scoretoupdate) > 200 && (score + scoretoupdate) < 500)
         badgetoupdate = "Level 2 Contributor";
+      else if (score.score + scoretoupdate >= 500)
+        badgetoupdate = "Level 3 Contributor";
 
       User.findByIdAndUpdate(
         userid,
