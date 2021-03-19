@@ -46,9 +46,7 @@ describe("Get posts of a particular user", () => {
       request(app)
         .post('/api/posts/new/' + userId)
         .set('authorization', token)
-        .field("title", 'A post')
-        .field("text", "This is a post")
-        .field("username", username)
+        .query({title: 'A post', text: "This is a post"})
         .expect(200)
         .then(response => {
           otherPostId = response.body._id;
@@ -103,7 +101,7 @@ describe("Create a new post", () => {
         request(app)
           .post('/api/posts/new/' + userId)
           .set('authorization', token)
-          .send({title: 'New post', text: 'This is my new post', username: username})
+          .query({title: 'New post', text: "This is my new post"})
           .expect(200)
           .then(response => {
             postId = response.body._id;
@@ -143,6 +141,21 @@ describe("Dislike a post", () => {
     });
 });
 
+describe("Commenting on a post", () => {
+  it("Successfully commented", (done) => {
+    request(app)
+      .put('/api/posts/comment')
+      .set('authorization', token)
+      .send({comment: "comment", postId: otherPostId, userId: userId})
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      })
+  });
+});
+
 describe("Display leaderboard", () => {
     it("Successfully displayed the leaderboard", (done) => {
         request(app)
@@ -161,6 +174,32 @@ describe("Get trending posts", () => {
     request(app)
       .get('/trendingposts')
       .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
+});
+
+describe("Delete a post", () => {
+  it("Successfully deleted", (done) => {
+    request(app)
+      .delete('/api/posts/' + postId)
+      .set('authorization', token)
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
+
+  it("Unauthorized", (done) => {
+    request(app)
+      .delete('/api/posts/' + otherPostId)
+      .set('authorization', token)
+      .expect(403)
       .end((err, res) => {
         if(err)
           return done(err);
