@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha test/tests.js --timeout 10000 --exit",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "start": "node app.js"
   },
   "author": "",
