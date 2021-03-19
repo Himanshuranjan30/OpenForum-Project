@@ -24,7 +24,7 @@ const leaderboard = (req, res) => {
       User.findByIdAndUpdate(
         userid,
         {
-          $inc: { score: (likes * comments) / diffDays, badge: badgetoupdate },
+          $inc: { score: (likes * comments) / diffDays},$set:{badge:badgetoupdate}
         },
         function (errr, doc) {
           if (errr) {
