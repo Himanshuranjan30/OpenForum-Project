@@ -23,7 +23,7 @@ const leaderboard = (req, res) => {
       else if (score.score + scoretoupdate >= 500)
         badgetoupdate = "Level 3 Contributor";
       
-      console.log(badgetoupdate)
+      
 
       User.findByIdAndUpdate(
         userid,
