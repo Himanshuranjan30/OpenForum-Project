@@ -16,8 +16,9 @@ const leaderboard = (req, res) => {
       const score = await User.findById(userid, { score: 1 });
 
       var badgetoupdate = "Level 1 Contributor";
+      var totalscore=parseInt(score.score)+scoretoupdate
       
-      if ((score.score + scoretoupdate) > 200 && (score + scoretoupdate) < 500)
+      if (totalscore> 200 && totalscore< 500)
         badgetoupdate = "Level 2 Contributor";
       else if (score.score + scoretoupdate >= 500)
         badgetoupdate = "Level 3 Contributor";
