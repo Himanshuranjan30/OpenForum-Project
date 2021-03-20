@@ -1,6 +1,5 @@
 const Post = require("../models/post");
 const User = require("../models/user");
-const fs = require("fs");
 
 const AWS = require("aws-sdk");
 const path = require("path");
@@ -24,13 +23,12 @@ const create = (req, res, next) => {
         Math.random().toString(36).substring(7) +
         path.extname(req.files["photo"].name),
       Body: req.files["photo"].data,
-      ACL:'public-read'
+      ACL: "public-read",
     };
     s3.upload(params, function (perr, pres) {
       if (perr) {
         console.log("Error uploading data: ", perr);
       } else {
-        
         post.photo = pres.Location;
         post.save((err, result) => {
           if (err) res.json(err);
@@ -85,12 +83,10 @@ const listNewsFeed = (req, res) => {
   let following = req.profile.following;
   following.push(req.profile._id);
   Post.find({ postedBy: { $in: req.profile.following } })
-    .populate("comments", "text created")
-    .populate("likes")
-    .populate("comments.postedBy", "_id name")
+    .populate("comments.postedBy")
     .populate("comments.likes")
     .populate("comments.incomments.postedBy")
-    .populate("postedBy", "_id name")
+    .populate("postedBy")
     .sort("-created")
     .exec((err, posts) => {
       if (err) {
@@ -159,14 +155,16 @@ const likeacomment = (req, res) => {
     {
       new: true,
     }
-  ).populate("comments.postedBy").exec((err, result) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
-      });
-    }
-    res.json(result);
-  });
+  )
+    .populate("comments.postedBy")
+    .exec((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      res.json(result);
+    });
 };
 
 const unlikeacomment = (req, res) => {
@@ -180,14 +178,16 @@ const unlikeacomment = (req, res) => {
     {
       new: true,
     }
-  ).populate("comments.postedBy").exec((err, result) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
-      });
-    }
-    res.json(result);
-  });
+  )
+    .populate("comments.postedBy")
+    .exec((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      res.json(result);
+    });
 };
 
 const commentincomment = (req, res) => {
@@ -299,26 +299,26 @@ const trendingposts = async (req, res) => {
     docs.forEach(async function (data) {
       var id = data.id;
       var likes = data.likes.length;
-      var userid=data.postedBy
+      var userid = data.postedBy;
       var comments = data.comments.length;
       const date2 = new Date();
       const diffTime = Math.abs(date2 - data.created);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       const scoretoupdate = (likes * comments) / diffDays;
       const score = await User.findById(userid, { score: 1 });
-      
+
       let badgetoupdate = "Level 1 Contributor";
       if (score.score + scoretoupdate >= 500)
         badgetoupdate = "Level 3 Contributor";
       else if (score.score + scoretoupdate > 200 && score + scoretoupdate < 500)
         badgetoupdate = "Level 2 Contributor";
       User.findByIdAndUpdate(
-          userid,
-          { $set: { badge: badgetoupdate } },
-          function (error, result) {
-            if (error) console.log(error);
-          }
-        );
+        userid,
+        { $set: { badge: badgetoupdate } },
+        function (error, result) {
+          if (error) console.log(error);
+        }
+      );
 
       Post.findByIdAndUpdate(
         id,
