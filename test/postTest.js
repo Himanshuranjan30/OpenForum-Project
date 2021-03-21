@@ -8,7 +8,7 @@ const User = require('../models/user');
 const Post = require('../models/post');
 var otherUserId = require('./userTest').otherUserId;
 
-var userId, token, postId, username, commentId, otherPostId, posts, secondPostId;
+var userId, token, otherToken, postId, username, commentId, otherPostId, posts, secondPostId;
 
 describe('User signin while creating a post', () => {
     it('Successful signin', (done) => {
@@ -20,7 +20,7 @@ describe('User signin while creating a post', () => {
         })
         .expect(200)
         .then(response => {
-          token = response.body.token;
+          otherToken = response.body.token;
           userId = response.body.user._id;
           username = response.body.user.name;
           done();
@@ -33,7 +33,7 @@ describe("Get posts of a particular user", () => {
   it("Successfully fetched", (done) => {
     request(app)
       .get('/api/posts/by/' + userId)
-      .set('authorization', token)
+      .set('authorization', otherToken)
       .then(response => {
         posts = response.body;
         done();
@@ -45,7 +45,7 @@ describe("Get posts of a particular user", () => {
     if(Object.keys(posts).length < 1){
       request(app)
         .post('/api/posts/new/' + userId)
-        .set('authorization', token)
+        .set('authorization', otherToken)
         .query({title: 'A post', text: "This is a post"})
         .expect(200)
         .then(response => {
@@ -159,6 +159,77 @@ describe("Commenting on a post", () => {
   it("Successfully commented", (done) => {
     request(app)
       .put('/api/posts/comment')
+      .set('authorization', token)
+      .send({comment: "comment", postId: otherPostId, userId: userId})
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      })
+  });
+});
+
+describe("Like a comment", () => {
+  it("Successfully liked a comment", (done) => {
+      request(app)
+        .put('/api/post/likeacomment')
+        .send({postId: otherPostId, userId: userId, comment: "comment", postedBy: otherUserId})
+        .expect(200)
+        .end((err, res) => {
+          if(err)
+            return done(err);
+          done();
+        })
+  });
+});
+
+describe("Dislike a comment", () => {
+  it("Successfully disliked a comment", (done) => {
+      request(app)
+        .put('/api/post/unlikeacomment')
+        .send({postId: otherPostId, userId: userId, comment: "comment", postedBy: otherUserId})
+        .expect(200)
+        .end((err, res) => {
+          if(err)
+            return done(err);
+          done();
+        })
+  });
+});
+
+describe("Commenting in a comment", () => {
+  it("Successfully commented", (done) => {
+    request(app)
+      .put('/api/post/commentincomment')
+      .send({comment: "comment", postId: otherPostId, comtext: "comment in comment", userId: userId})
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      })
+  });
+});
+
+describe("Removing comment in a comment", () => {
+  it("Successfully uncommented", (done) => {
+    request(app)
+      .put('/api/post/uncommentincomment')
+      .send({comment: "comment", postId: otherPostId, comtext: "comment in comment", userId: userId})
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      })
+  });
+});
+
+describe("Removing a comment", () => {
+  it("Successfully uncommented", (done) => {
+    request(app)
+      .put('/api/posts/uncomment')
       .set('authorization', token)
       .send({comment: "comment", postId: otherPostId, userId: userId})
       .expect(200)
