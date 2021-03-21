@@ -1,43 +1,41 @@
 const User = require("../models/user");
-const formidable = require("formidable");
-const fs = require("fs");
-const extend = require("extend");
-const AWS = require('aws-sdk');
-const path=require('path')
-const config=require('../config')
+
+const AWS = require("aws-sdk");
+const path = require("path");
+const config = require("../config");
 const s3 = new AWS.S3({
   accessKeyId: config.awsid,
-  secretAccessKey:config.awssecret
+  secretAccessKey: config.awssecret,
 });
 
-
-
-
-const uploadaimage=(req,res)=>{
+const uploadaimage = (req, res) => {
   var params = {
-    Bucket: 'imagestoreopenforum',
-    Key: "userimages/"+Math.random().toString(36).substring(7)+path.extname(req.files['photo'].name),
-    Body: req.files['photo'].data,
-    ACL:'public-read'
+    Bucket: "imagestoreopenforum",
+    Key:
+      "userimages/" +
+      Math.random().toString(36).substring(7) +
+      path.extname(req.files["photo"].name),
+    Body: req.files["photo"].data,
+    ACL: "public-read",
   };
   s3.upload(params, function (perr, pres) {
     if (perr) {
       console.log("Error uploading data: ", perr);
     } else {
-      console.log(String(pres.Location))
-      User.findByIdAndUpdate(req.query.id,{$set:{
-        photo:pres.Location
-      }}).exec()
-      res.send(pres)
+      User.findByIdAndUpdate(req.query.id, {
+        $set: {
+          photo: pres.Location,
+        },
+      }).exec();
+      res.send(pres);
     }
   });
-  
-}
+};
 
-const create = async(req, res) => {
+const create = async (req, res) => {
   const user = new User(req.body);
   try {
-  await user.save();
+    await user.save();
     return res.status(200).json({
       message: "Successfully signed up!",
     });
@@ -85,32 +83,26 @@ const list = async (req, res) => {
 };
 
 const update = (req, res) => {
-  let user = req.profile
+  let user = req.profile;
   user.name = req.query.name;
   user.email = req.query.email;
   var params = {
     Bucket: "imagestoreopenforum",
-    Key: "userimages/" +req.profile.id+ path.extname(req.files["photo"].name),
+    Key: "userimages/" + req.profile.id + path.extname(req.files["photo"].name),
     Body: req.files["photo"].data,
   };
   s3.upload(params, function (perr, pres) {
     if (perr) {
       console.log("Error uploading data: ", perr);
     } else {
-      console.log(String(pres.Location));
-      console.log(pres);
-      user.photo=pres.Location
+      user.photo = pres.Location;
       user.save((err, result) => {
-        if(err)
-          res.json(err)
-        else
-          res.json(result);
-      
-    })
-  
-};})
-  }
-
+        if (err) res.json(err);
+        else res.json(result);
+      });
+    }
+  });
+};
 
 const remove = async (req, res) => {
   try {
@@ -126,16 +118,14 @@ const remove = async (req, res) => {
   }
 };
 
-const photo = async(req, res, next) => {
- let result= await User.findById(req.query.id,{photo:1,_id:0})
-  if(result)
-     res.json(result)
-  else
-    next();
+const photo = async (req, res, next) => {
+  let result = await User.findById(req.query.id, { photo: 1, _id: 0 });
+  if (result) res.json(result);
+  else next();
 };
 
 const defaultPhoto = (req, res) => {
-  return res.sendFile(__dirname+'/profile.png');
+  return res.sendFile(__dirname + "/profile.png");
 };
 
 const addFollowing = async (req, res, next) => {
@@ -143,7 +133,7 @@ const addFollowing = async (req, res, next) => {
     await User.findByIdAndUpdate(req.body.userId, {
       $push: { following: req.body.followId },
     });
-    updateScore(req.body.userId,-0.5)
+    updateScore(req.body.userId, -0.5);
     next();
   } catch (err) {
     return res.status(400).json({
@@ -164,7 +154,7 @@ const addFollower = async (req, res) => {
       .exec();
     result.hashed_password = undefined;
     result.salt = undefined;
-    updateScore(req.body.followId,1)
+    updateScore(req.body.followId, 1);
     res.json(result);
   } catch (err) {
     return res.status(400).json({
@@ -178,7 +168,7 @@ const removeFollowing = async (req, res, next) => {
     await User.findByIdAndUpdate(req.body.userId, {
       $pull: { following: req.body.unfollowId },
     });
-    updateScore(req.body.userId,0.5)
+    updateScore(req.body.userId, 0.5);
     next();
   } catch (err) {
     return res.status(400).json({
@@ -198,7 +188,7 @@ const removeFollower = async (req, res) => {
       .exec();
     result.hashed_password = undefined;
     result.salt = undefined;
-    updateScore(req.body.unfollowId,-1)
+    updateScore(req.body.unfollowId, -1);
     res.json(result);
   } catch (err) {
     return res.status(400).json({
@@ -211,7 +201,7 @@ const findPeople = async (req, res) => {
   let following = req.profile.following;
   following.push(req.profile._id);
   try {
-    let users = await User.find({ _id: { $nin: following } }).select("name");
+    let users = await User.find({ _id: { $nin: following } }).select({"name":1,"photo":1});
     res.json(users);
   } catch (err) {
     return res.status(400).json({
@@ -230,29 +220,20 @@ const updateScore = (userId, points) => {
   );
 };
 
-const getfollowers=async(req,res)=>{
-  let followers=await User.findById(req.profile.id,{followers:1})
-  if(followers)
-  {
-    res.json({followerscount:followers.followers.length})
-  }
-  else
-     res.send("error fetching followers")
+const getfollowers = async (req, res) => {
+  let followers = await User.findById(req.profile.id, { followers: 1 });
+  if (followers) {
+    res.json({ followerscount: followers.followers.length });
+  } else res.send("error fetching followers");
+};
+const getfollowing = async (req, res) => {
+  let following = await User.findById(req.profile.id, { following: 1 });
+  if (following) {
+    res.json({ followingcount: following.following.length });
+  } else res.send("error fetching followings");
+};
 
-}
-const getfollowing=async(req,res)=>{
-  let following=await User.findById(req.profile.id,{following:1})
-  if(following)
-  {
-    res.json({followingcount:following.following.length})
-  }
-  else
-     res.send("error fetching followings")
-
-}
-
-
-module.exports={
+module.exports = {
   create,
   userByID,
   read,
@@ -268,5 +249,5 @@ module.exports={
   findPeople,
   uploadaimage,
   getfollowers,
-  getfollowing
+  getfollowing,
 };
