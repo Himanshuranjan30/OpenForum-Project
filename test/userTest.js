@@ -118,6 +118,17 @@ describe("Get user's profile photo", () => {
         done();
       });
   });
+
+  it("Successfully fetched the default photo", (done) => {
+    request(app)
+      .get('/api/users/defaultphoto')
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
 });
 
 describe("Get all users", () => {
@@ -172,6 +183,20 @@ describe("", () => {
       .catch(err => done(err));
   })
 })
+
+describe("Get user data", () => {
+  it("Successfully fetched", (done) => {
+    request(app)
+      .get('/api/users/' + userId)
+      .set('authorization', token)
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
+});
 
 describe("Follow a user", () => {
     it("Successfully followed", (done) => {

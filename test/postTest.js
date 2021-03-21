@@ -8,7 +8,7 @@ const User = require('../models/user');
 const Post = require('../models/post');
 var otherUserId = require('./userTest').otherUserId;
 
-var userId, token, postId, username, commentId, otherPostId, posts;
+var userId, token, postId, username, commentId, otherPostId, posts, secondPostId;
 
 describe('User signin while creating a post', () => {
     it('Successful signin', (done) => {
@@ -108,7 +108,21 @@ describe("Create a new post", () => {
             done();
           })
           .catch(err => done(err));
-    });    
+    });   
+    
+    it("Successfully created a new post", (done) => {
+      request(app)
+        .post('/api/posts/new/' + userId)
+        .set('authorization', token)
+        .query({title: 'New post', text: "This is my new post"})
+        .field('photo', '../open_forum_er_diagram.png')
+        .expect(200)
+        .then(response => {
+          secondPostId = response.body._id;
+          done();
+        })
+        .catch(err => done(err));
+    });
 });
 
 describe("Like a post", () => {
@@ -186,6 +200,18 @@ describe("Delete a post", () => {
   it("Successfully deleted", (done) => {
     request(app)
       .delete('/api/posts/' + postId)
+      .set('authorization', token)
+      .expect(200)
+      .end((err, res) => {
+        if(err)
+          return done(err);
+        done();
+      });
+  });
+
+  it("Successfully deleted", (done) => {
+    request(app)
+      .delete('/api/posts/' + secondPostId)
       .set('authorization', token)
       .expect(200)
       .end((err, res) => {
