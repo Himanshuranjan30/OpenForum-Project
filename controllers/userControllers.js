@@ -49,8 +49,8 @@ const create = async (req, res) => {
 const userByID = async (req, res, next, id) => {
   try {
     let user = await User.findById(id)
-      .populate("following", "_id name")
-      .populate("followers", "_id name")
+      .populate("following", "_id name photo")
+      .populate("followers", "_id name photo")
       .exec();
     if (!user)
       return res.status("400").json({
