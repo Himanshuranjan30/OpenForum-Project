@@ -307,11 +307,13 @@ const trendingposts = async (req, res) => {
       const scoretoupdate = (likes * comments) / diffDays;
       const score = await User.findById(userid, { score: 1 });
 
-      let badgetoupdate = "Level 1 Contributor";
-      if (score.score + scoretoupdate >= 500)
-        badgetoupdate = "Level 3 Contributor";
+      let badgetoupdate = "Level 1 (Contributor)";
+      if (score.score + scoretoupdate >= 1000)
+        badgetoupdate = "Level 4 (Ace Contributor)";
+      else if (score.score + scoretoupdate > 500 && score + scoretoupdate < 1000)
+        badgetoupdate = "Level 3 (Great Contributor)";
       else if (score.score + scoretoupdate > 200 && score + scoretoupdate < 500)
-        badgetoupdate = "Level 2 Contributor";
+        badgetoupdate = "Level 2 (Regular Contributor)";
       User.findByIdAndUpdate(
         userid,
         { $set: { badge: badgetoupdate } },
