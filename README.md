@@ -34,5 +34,5 @@ https://documenter.getpostman.com/view/12533181/Tz5p7JUH
 ```npm install```  
 ```node app.js```  
 
-- You can also check the api using our hosted url:
-https://openforumsocial.herokuapp.com
+- You can also have a look at the site hosted at:
+https://open-forum-frontend.herokuapp.com
