@@ -28,7 +28,7 @@ A web application providing a platform for users to socialize.
 
 ## API Documentation
 
-https://documenter.getpostman.com/view/12533181/Tz5p7JUH
+https://documenter.getpostman.com/view/12533181/Tz5v2aZU
 
 ## ER diagram
 ![alt text](https://github.com/Himanshuranjan30/OpenForum-Project/blob/development/open_forum_er_diagram.png?raw=true)
