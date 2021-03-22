@@ -21,6 +21,10 @@ A web application providing a platform for users to socialize.
 - MongoDB
 - Heroku
 - Postman
+- Amazon S3
+- Sentry
+- Travis
+- Coveralls
 
 ## API Documentation
 
