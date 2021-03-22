@@ -41,5 +41,4 @@ https://documenter.getpostman.com/view/12533181/Tz5v2aZU
 - You can also have a look at the site hosted at:
 https://open-forum-frontend.herokuapp.com
 
-- You can use our web app by visiting:
-https://open-forum-frontend.herokuapp.com/
+
