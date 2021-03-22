@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.com/Himanshuranjan30/OpenForum-Project.svg?branch=development)](https://travis-ci.com/Himanshuranjan30/OpenForum-Project)
 [![Coverage Status](https://coveralls.io/repos/github/Himanshuranjan30/OpenForum-Project/badge.svg?branch=development)](https://coveralls.io/github/Himanshuranjan30/OpenForum-Project?branch=development)
 
-A web application providing a platform for users to socialize.
+A web application providing a platform for users to socialize on Internet.
 
 ## Features
 
