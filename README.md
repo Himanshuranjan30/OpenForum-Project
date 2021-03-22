@@ -17,7 +17,8 @@ A web application providing a platform for users to socialize on Internet.
 ## Tools and tech
 - Node.js
 - Express.js
-- React
+- React-Redux
+- Material UI
 - MongoDB
 - Heroku
 - Postman
@@ -38,6 +39,8 @@ https://documenter.getpostman.com/view/12533181/Tz5v2aZU
 ```npm install```  
 ```node app.js```  
 
+- Test our API at:
+https://openforumsocial.herokuapp.com/  
 - You can also have a look at the site hosted at:
 https://open-forum-frontend.herokuapp.com
 
